@@ -18,7 +18,7 @@ const getAverageData = async (req, res) => {
   try {
     const { country } = req.query;
     console.log(country);
-    if (country) {
+   
       const { rows, fields } = await db(
         `SELECT
     foreign_country,
@@ -37,7 +37,6 @@ GROUP BY
           rows,
         },
       });
-    }
   } catch (error) {
     console.log(
       "something went wrong in get average data controller : ",
