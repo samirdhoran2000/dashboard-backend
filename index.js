@@ -1,5 +1,4 @@
 import express from "express";
-// import db from "./config/db.config.js";
 import cors from "cors"
 import exportRouter from "./routes/export.routes.js";
 
@@ -10,9 +9,8 @@ app.use(cors({
   origin:"*"
 }));
 app.use(express.json());
-app.use("/api/exportData", exportRouter);
+app.use("/api", exportRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-//   db(`select * from cosmo_table1 limit 10`);
 });
