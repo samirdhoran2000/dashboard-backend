@@ -15,10 +15,7 @@ const getExportData = async (req, res) => {
   }
 };
 const getAverageData = async (req, res) => {
-  try {
-    const { country } = req.query;
-    console.log(country);
-   
+  try {   
       const { rows, fields } = await db(
         `SELECT
     foreign_country,
