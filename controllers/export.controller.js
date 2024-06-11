@@ -15,9 +15,9 @@ const getExportData = async (req, res) => {
   }
 };
 const getAverageData = async (req, res) => {
-  try {   
-      const { rows, fields } = await db(
-        `SELECT
+  try {
+    let { rows, fields } = await db(
+      `SELECT
     foreign_country,
     AVG(total_fob_inr / quantity) AS average_price,
     AVG(quantity) AS average_quantity,
@@ -26,14 +26,26 @@ FROM
     cosmoDB.cosmo_table1
 GROUP BY
     foreign_country `
-      );
-
-      res.json({
-        msg: "data get successfully ",
-        result: {
-          rows,
-        },
-      });
+    );
+    const { rows:row, fields:field } = await db(
+      `SELECT
+    AVG(total_fob_inr / quantity) AS average_price,
+    AVG(quantity) AS average_quantity,
+    COUNT(DISTINCT consignee_name) AS consignee_count
+FROM
+    cosmoDB.cosmo_table1
+ `
+    );
+    row[0]['foreign_country'] = 'All'
+    rows.unshift(row[0]);
+    console.log('row 0th element: ', rows);
+    
+    res.json({
+      msg: "data get successfully ",
+      result: {
+        rows,
+      },
+    });
   } catch (error) {
     console.log(
       "something went wrong in get average data controller : ",
@@ -41,5 +53,29 @@ GROUP BY
     );
   }
 };
+const getAverageDataAll = async (req, res) => {
+  try {
+    const { rows, fields } = await db(
+      `SELECT
+    AVG(total_fob_inr / quantity) AS average_price,
+    AVG(quantity) AS average_quantity,
+    COUNT(DISTINCT consignee_name) AS consignee_count
+FROM
+    cosmoDB.cosmo_table1`
+    );
 
-export { getExportData, getAverageData };
+    res.json({
+      msg: "data get successfully ",
+      result: {
+        rows,
+      },
+    });
+  } catch (error) {
+    console.log(
+      "something went wrong in get average data all controller : ",
+      error
+    );
+  }
+};
+
+export { getExportData, getAverageData, getAverageDataAll };
