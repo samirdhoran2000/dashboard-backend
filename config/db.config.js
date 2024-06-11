@@ -48,7 +48,9 @@ const db = async (query) => {
     console.log('query is not correct or something went wrong in while query : ',err);
     // Don't forget to release the connection when finished!
         pool.releaseConnection(conn);
-        return;
+        return new Error(
+          "query is not correct or something went wrong in while query : "
+        );
   }
 
 //   conn.release();
