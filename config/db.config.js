@@ -27,14 +27,12 @@ const pool = mysql.createPool({
 const db = async (query) => {
     try {
       if (!query) {
-        return "provide a query ";
+        return new Error(" provide a query ");
       }
       const conn = await pool.getConnection();
       // For pool initialization, see above
       const [rows, fields] = await conn.query(query);
-      // Convert Buffer fields to strings
-    //   const convertedFields = convertBufferToString(fields);
-      console.log({ rows, fields });
+      // console.log({ rows, fields });
         
       const result = {
         rows,

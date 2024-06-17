@@ -1,5 +1,19 @@
 import db from "../config/db.config.js";
 
+const logMemoryUsage = (label) => {
+  const memoryUsage = process.memoryUsage();
+  console.log(`[${label}] Memory Usage:`, {
+    rss: `${(memoryUsage.rss / 1024 / 1024).toFixed(2)} MB`,
+    heapTotal: `${(memoryUsage.heapTotal / 1024 / 1024).toFixed(2)} MB`,
+    heapUsed: `${(memoryUsage.heapUsed / 1024 / 1024).toFixed(2)} MB`,
+    external: `${(memoryUsage.external / 1024 / 1024).toFixed(2)} MB`,
+    arrayBuffers: `${(memoryUsage.arrayBuffers / 1024 / 1024).toFixed(2)} MB`,
+  });
+
+  console.log('memory usage : ', memoryUsage);
+};
+
+
 const getExportData = async (req, res) => {
   try {
     const { rows, fields } = await db("select * from cosmo_table1");
@@ -10,6 +24,7 @@ const getExportData = async (req, res) => {
         rows,
       },
     });
+    logMemoryUsage(getExportData);
   } catch (error) {
     console.log("something went wrong in get export data controller : ", error);
   }
@@ -37,8 +52,8 @@ FROM
  `
     );
     row[0]['foreign_country'] = 'All'
-    rows.unshift(row[0]);
-    console.log('row 0th element: ', rows);
+    await rows.unshift(row[0]);
+    // console.log('row 0th element: ', rows);
     
     res.json({
       msg: "data get successfully ",
@@ -46,6 +61,7 @@ FROM
         rows,
       },
     });
+    logMemoryUsage(getAverageData);
   } catch (error) {
     console.log(
       "something went wrong in get average data controller : ",
@@ -53,29 +69,5 @@ FROM
     );
   }
 };
-const getAverageDataAll = async (req, res) => {
-  try {
-    const { rows, fields } = await db(
-      `SELECT
-    AVG(total_fob_inr / quantity) AS average_price,
-    AVG(quantity) AS average_quantity,
-    COUNT(DISTINCT consignee_name) AS consignee_count
-FROM
-    cosmoDB.cosmo_table1`
-    );
 
-    res.json({
-      msg: "data get successfully ",
-      result: {
-        rows,
-      },
-    });
-  } catch (error) {
-    console.log(
-      "something went wrong in get average data all controller : ",
-      error
-    );
-  }
-};
-
-export { getExportData, getAverageData, getAverageDataAll };
+export { getExportData, getAverageData };
