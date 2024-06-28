@@ -16,7 +16,7 @@ const logMemoryUsage = (label) => {
 
 const getExportData = async (req, res) => {
   try {
-    const { rows, fields } = await db("select * from cosmo_table1");
+    const { rows, fields } = await db("select * from cosmo_table3");
 
     res.json({
       msg: "data get successfully ",
@@ -34,21 +34,21 @@ const getAverageData = async (req, res) => {
     let { rows, fields } = await db(
       `SELECT
     foreign_country,
-    AVG(total_fob_inr / quantity) AS average_price,
+    AVG(total_inr_ammount / quantity) AS average_price,
     AVG(quantity) AS average_quantity,
     COUNT(DISTINCT consignee_name) AS consignee_count
 FROM
-    cosmoDB.cosmo_table1
+    cosmoDB.cosmo_table3
 GROUP BY
     foreign_country `
     );
-    const { rows:row, fields:field } = await db(
+    const { rows: row, fields: field } = await db(
       `SELECT
-    AVG(total_fob_inr / quantity) AS average_price,
+    AVG(total_inr_ammount / quantity) AS average_price,
     AVG(quantity) AS average_quantity,
     COUNT(DISTINCT consignee_name) AS consignee_count
 FROM
-    cosmoDB.cosmo_table1
+    cosmoDB.cosmo_table3
  `
     );
     row[0]['foreign_country'] = 'All'

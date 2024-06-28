@@ -54,3 +54,5 @@ secret-config.json
 
 # Ignore Windows specific files
 Thumbs.db
+
+temp*
