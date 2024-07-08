@@ -1,17 +1,6 @@
 import db from "../config/db.config.js";
 
-const logMemoryUsage = (label) => {
-  const memoryUsage = process.memoryUsage();
-  console.log(`[${label}] Memory Usage:`, {
-    rss: `${(memoryUsage.rss / 1024 / 1024).toFixed(2)} MB`,
-    heapTotal: `${(memoryUsage.heapTotal / 1024 / 1024).toFixed(2)} MB`,
-    heapUsed: `${(memoryUsage.heapUsed / 1024 / 1024).toFixed(2)} MB`,
-    external: `${(memoryUsage.external / 1024 / 1024).toFixed(2)} MB`,
-    arrayBuffers: `${(memoryUsage.arrayBuffers / 1024 / 1024).toFixed(2)} MB`,
-  });
-
-  console.log('memory usage : ', memoryUsage);
-};
+import { logMemoryUsage } from "../utils/logger.js"
 
 
 const getExportData = async (req, res) => {
