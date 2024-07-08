@@ -2,12 +2,14 @@ import multer from "multer";
 import {
   S3Client,
   PutObjectCommand,
-    HeadObjectCommand,
-  ListObjectsV2Command
+  HeadObjectCommand,
+  ListObjectsV2Command,
+  DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
 import { Router } from "express";
 
 const router = Router();
+const client = new S3Client({});
 
 // Set up memory storage for uploaded files
 const storage = multer.memoryStorage();
@@ -36,7 +38,12 @@ router.post(
   upload.fields([{ name: "avatar" }]),
   async (req, res) => {
     try {
-      const s3Client = new S3Client({});
+      const s3Client = new S3Client({
+        Bucket:process.env.S3_BUCKET_NAME,
+aws_access_key_id : process.env.aws_access_key_id,
+aws_secret_access_key : process.env.aws_secret_access_key,
+region : process.env.aws_region,
+      });
       const bucketName = process.env.S3_BUCKET_NAME;
 
       // Loop through each file and upload to S3
@@ -85,7 +92,6 @@ router.get("/list-objects", async (req, res) => {
       // one for demonstration purposes.
       MaxKeys: 1,
     });
-const client = new S3Client({});
     try {
       let isTruncated = true;
 
@@ -112,4 +118,25 @@ const client = new S3Client({});
     }
 });
 
+router.post('/delete-objects', async (req, res) => {
+  // const deleteObjects = req.body;
+  const command = new DeleteObjectsCommand({
+    Bucket: process.env.S3_BUCKET_NAME,
+    Delete: {
+      Objects: [
+        // { Key: "EXPORT 2023 AUG 61.xlsx" },
+        // { Key: "EXPORT 2023 MAY JUL 42 POLAND.xlsx" },
+      ],
+    },
+  });
+try {
+  const { Deleted } = await client.send(command);
+  console.log(
+    `Successfully deleted ${Deleted.length} objects from S3 bucket. Deleted objects:`
+  );
+  console.log(Deleted.map((d) => `${d.Key}`).join("\n"));
+} catch (err) {
+  console.error(err);
+}
+});
 export default router;

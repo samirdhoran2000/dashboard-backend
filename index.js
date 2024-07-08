@@ -3,7 +3,7 @@ import cors from "cors"
 import exportRouter from "./routes/export.routes.js";
 // import fileUploadRouter from "./routes/fileUpload.routes.js";
 
-import fileUploadRouter from "./controllers/fileUpload.controller.js";
+import fileUploadRouter from "./controllers/file.controller.js";
 
 const app = express();
 const PORT = process.env.port || 3000;
